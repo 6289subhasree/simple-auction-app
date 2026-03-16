@@ -68,12 +68,14 @@ async function signAndSubmit(publicKey: string, operation: ReturnType<Contract["
 
   const prepared = SorobanRpc.assembleTransaction(tx, simResult).build();
 
-  const { signedTxXdr } = await signTransaction(prepared.toXDR(), {
+  const signedTxXdr = await signTransaction(prepared.toXDR(), {
     networkPassphrase: NETWORK_PASSPHRASE,
   });
 
+  const signedXdr = typeof signedTxXdr === "string" ? signedTxXdr : (signedTxXdr as { signedTxXdr: string }).signedTxXdr;
+
   const { TransactionBuilder: TB } = await import("@stellar/stellar-sdk");
-  const signed = TB.fromXDR(signedTxXdr, NETWORK_PASSPHRASE);
+  const signed = TB.fromXDR(signedXdr, NETWORK_PASSPHRASE);
   const send = await server.sendTransaction(signed);
   if (send.status === "ERROR") throw new Error(JSON.stringify(send.errorResult));
 
