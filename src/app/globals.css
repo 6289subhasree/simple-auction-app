@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0D0D1A;
+  color: #F0EEF8;
+  font-family: 'Space Grotesk', sans-serif;
+  overflow-x: hidden;
+}
+
+@keyframes livepulse {
+  0%, 100% { box-shadow: 0 0 0 0 #A855F766; }
+  50%       { box-shadow: 0 0 0 6px #A855F722; }
+}
+
+@keyframes fall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-12px) scale(0.96); }
+}
+
+@keyframes orbitspin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-livepulse { animation: livepulse 1.2s ease-in-out infinite; }
+.animate-orbit     { animation: orbitspin 12s linear infinite; }
+.animate-orbit-rev { animation: orbitspin 8s linear infinite reverse; }
+.animate-slidein   { animation: slideIn .35s cubic-bezier(.34,1.56,.64,1); }
+.animate-fall      { animation: fall linear forwards; }
