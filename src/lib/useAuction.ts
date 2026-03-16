@@ -10,7 +10,6 @@ import {
 } from "@/lib/contract";
 
 export type LogEntry = { time: string; msg: string; type: "ok" | "err" | "inf" | "wrn" | "sys" };
-
 export type BidRecord = { addr: string; amount: bigint };
 
 function ts() {
@@ -35,17 +34,15 @@ export function useAuction() {
     setLogs((prev) => [...prev, { time: ts(), msg, type }]);
   }, []);
 
-  // ── Connect Freighter ──────────────────────────────────
   const connectWallet = useCallback(async () => {
     try {
-      const { isConnected, getAddress } = await import("@stellar/freighter-api");
-      const connected = await isConnected();
-      if (!connected.isConnected) throw new Error("Freighter not connected");
-      const result = await getAddress();
-      if (result.error) throw new Error(result.error);
-      setWalletAddr(result.address);
-      log(`Wallet connected: ${tr(result.address)}`, "ok");
-      return result.address;
+      const { setAllowed, requestAccess } = await import("@stellar/freighter-api");
+      await setAllowed();
+      const publicKey = await requestAccess();
+      if (!publicKey) throw new Error("Could not get public key from Freighter");
+      setWalletAddr(publicKey);
+      log(`Wallet connected: ${tr(publicKey)}`, "ok");
+      return publicKey;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Unknown error";
       log("Wallet connection failed: " + msg, "err");
@@ -53,7 +50,6 @@ export function useAuction() {
     }
   }, [log]);
 
-  // ── Refresh from chain ─────────────────────────────────
   const refreshStatus = useCallback(async () => {
     setLoading("refresh");
     log("Fetching on-chain state…", "inf");
@@ -74,7 +70,6 @@ export function useAuction() {
     setLoading(null);
   }, [log]);
 
-  // ── Initialize auction ─────────────────────────────────
   const initialize = useCallback(async (startingBidXLM: number) => {
     if (!walletAddr) throw new Error("Connect wallet first");
     setLoading("init");
@@ -92,7 +87,6 @@ export function useAuction() {
     }
   }, [walletAddr, log]);
 
-  // ── Place bid ──────────────────────────────────────────
   const bid = useCallback(async (amountXLM: number) => {
     if (!walletAddr) throw new Error("Connect wallet first");
     setLoading("bid");
