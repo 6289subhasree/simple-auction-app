@@ -40,6 +40,8 @@ Contract ID: CBQYE25DEZ72FCQ5CTYR5RQGBHCDIBK3NTTCJOG6SXSVKHV7CZDTMP4R
 Network:     Stellar Testnet
 ```
 
+![alt text](<Screenshot 2026-03-16 150020.png>)
+
 ---
 
 ## Smart Contract Functions
